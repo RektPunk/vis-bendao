@@ -11,7 +11,6 @@ st.set_page_config(
     layout="wide",
 )
 st.write("# BendDao trace tracker")
-st.write(list(st.session_state.keys()))
 
 st.sidebar.write("# Input transaction hash")
 
