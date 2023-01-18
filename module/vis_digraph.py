@@ -8,6 +8,8 @@ def vis_digraph(
     from_: str,
     to_: str,
     edge_label_name: str,
+    height: int,
+    width: int,
 ) -> go.Figure:
     _df = df[[from_, to_, edge_label_name]]
     _nx_network_info = nx.from_pandas_edgelist(
@@ -33,10 +35,14 @@ def vis_digraph(
         mode="markers+text",
         hoverinfo="text",
         textposition="top center",
-        marker=dict(size=10),
+        marker=dict(
+            size=10,
+            color = "red",
+        ),
         textfont = dict(
             color="red",
         ),
+        name = "wallet",
     )
     fig = go.Figure(
         node_trace,
@@ -44,9 +50,10 @@ def vis_digraph(
             hovermode="closest",
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            showlegend=True
         ),
     )
-    fig.update_layout(height = 800, width = 1800)
+    fig.update_layout(height = height, width = width)
     for edges in _nx_network_info.edges(data=True):
         _location_from_x, _location_from_y = _node_location[edges[0]]
         _location_to_x, _location_to_y = _node_location[edges[1]]
@@ -61,20 +68,24 @@ def vis_digraph(
                 axref="x",
                 ayref="y",
                 showarrow=True,
-                arrowhead=1,
+                arrowhead=3,
                 arrowsize=3,
                 arrowwidth=1,
                 arrowcolor="white",
-            )
+            ),
         )
         fig.add_annotation(
             dict(
                 x=(_location_from_x + _location_to_x) / 2,
                 y=(_location_from_y + _location_to_y) / 2,
                 text=edges[2][edge_label_name],
+                font=dict(
+                    color="grey",
+                    size=12
+                ),
                 showarrow=True,
-                arrowhead=1,
-                arrowcolor="black",
+                arrowhead=0,
+                arrowcolor="grey",
             )
         )
     return fig

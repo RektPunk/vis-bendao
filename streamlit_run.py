@@ -14,6 +14,14 @@ maxtags_sidebar = st.sidebar.slider(
     "Number of transactions allowed?", 1, 5, 3, key="ehikwegrjifbwreuk"
 )
 
+height = st.sidebar.slider(
+    "Height", 100, 1000, 800
+)
+
+width = st.sidebar.slider(
+    "Width", 100, 1000, 800
+)
+
 st.session_state.transactions = st_tags_sidebar(
     label="# Input transaction hash:",
     text="Press enter to add more",
@@ -35,8 +43,9 @@ if len(st.session_state.transactions) != 0:
         _df = _df.assign(
             _amount=[
                 str(round(int(amount) / 10**18, 3))
-                if name
-                in ["Wrapped Ether", "Bend debt bearing WETH", "Bend interest bearing WETH"]
+                if (
+                    name in ["Wrapped Ether", "Aave interest bearing WETH", "Bend debt bearing WETH", "Bend interest bearing WETH"] or "WETH" in name
+                )
                 else amount
                 for amount, name in zip(_df["amount"], _df["name"])
             ]
@@ -56,5 +65,7 @@ if len(st.session_state.transactions) != 0:
             "from_address_",
             "to_address_",
             "edge_attr",
+            height,
+            width,
         )
-        st.plotly_chart(fig, height = 800, width = 1800)
+        st.plotly_chart(fig, height = height, width = width)
