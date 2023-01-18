@@ -71,7 +71,7 @@ def vis_digraph(
                 arrowhead=3,
                 arrowsize=3,
                 arrowwidth=1,
-                arrowcolor="white",
+                arrowcolor="grey",
             ),
         )
         fig.add_annotation(

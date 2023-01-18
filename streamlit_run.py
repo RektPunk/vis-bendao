@@ -6,7 +6,12 @@ from module.vis_digraph import vis_digraph
 DATA_FILENAME = "data/benddao.parquet"
 df = pd.read_parquet(DATA_FILENAME)
 
-st.write("# Bendao trace tracker")
+st.set_page_config(
+    page_title="BendDao txs",
+    layout="wide",
+)
+st.write("# BendDao trace tracker")
+st.write(list(st.session_state.keys()))
 
 st.sidebar.write("# Input transaction hash")
 
