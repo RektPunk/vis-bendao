@@ -48,7 +48,7 @@ if len(st.session_state.transactions) != 0:
             _amount=[
                 str(round(int(amount) / 10**18, 3))
                 if (
-                    name in ["Wrapped Ether", "Aave interest bearing WETH", "Bend debt bearing WETH", "Bend interest bearing WETH"] or "WETH" in name
+                    name in ["Wrapped Ether", "Aave interest bearing WETH", "Bend debt bearing WETH", "Bend interest bearing WETH"] or "WETH" in name or name is None
                 )
                 else amount
                 for amount, name in zip(_df["amount"], _df["name"])
