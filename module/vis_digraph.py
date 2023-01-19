@@ -60,10 +60,10 @@ def vis_digraph(
         _location_to_x, _location_to_y = _node_location[edges[1]]
         fig.add_annotation(
             dict(
-                x=_location_from_x,
-                y=_location_from_y,
-                ax=_location_to_x,
-                ay=_location_to_y,
+                x=_location_to_x,
+                y=_location_to_y,
+                ax=_location_from_x,
+                ay=_location_from_y,
                 xref="x",
                 yref="y",
                 axref="x",
