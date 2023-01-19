@@ -12,11 +12,12 @@ def vis_digraph(
     width: int,
 ) -> go.Figure:
     _df = df[[from_, to_, edge_label_name]]
+    _edge_df = _df.groupby([from_, to_])[edge_label_name].apply(lambda x: ', '.join(x)).reset_index()
     _nx_network_info = nx.from_pandas_edgelist(
-        _df,
+        _edge_df,
         source=from_,
         target=to_,
-        edge_attr=edge_label_name,
+        edge_attr=True,
     )
     _node_location = nx.layout.spring_layout(_nx_network_info)
     node_x = []
