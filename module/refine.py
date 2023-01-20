@@ -74,7 +74,9 @@ def get_loss_gain(
         .reset_index()
         .rename(columns={"to_address": "address", "_amount_num": "gain"})
     )
-    _balance_df = _loss_df.merge(_gain_df, how="outer", on=["address", "name"]).fillna(0)
+    _balance_df = _loss_df.merge(_gain_df, how="outer", on=["address", "name"]).fillna(
+        0
+    )
     _balance_df = _balance_df.assign(
         balance_change=round(_balance_df["gain"] - _balance_df["loss"], 3)
     )
