@@ -3,21 +3,16 @@ import networkx as nx
 import plotly.graph_objects as go
 
 
-def vis_digraph(
+def get_nodes(
     df: pd.DataFrame,
     from_: str,
     to_: str,
-    edge_label_name: str,
-    height: int,
-    width: int,
-) -> go.Figure:
-    _df = df[[from_, to_, edge_label_name]]
-    _edge_df = _df.groupby([from_, to_])[edge_label_name].apply(lambda x: ', '.join(x)).reset_index()
+):
+    _df = df[[from_, to_]]
     _nx_network_info = nx.from_pandas_edgelist(
-        _edge_df,
+        _df,
         source=from_,
         target=to_,
-        edge_attr=True,
     )
     _node_location = nx.layout.spring_layout(_nx_network_info)
     node_x = []
@@ -38,12 +33,31 @@ def vis_digraph(
         textposition="top center",
         marker=dict(
             size=10,
-            color = "red",
-        ),
-        textfont = dict(
             color="red",
         ),
-        name = "wallet",
+        textfont=dict(
+            color="red",
+        ),
+        name="wallet",
+    )
+    return (_node_location, node_trace)
+
+
+def vis_digraph(
+    df: pd.DataFrame,
+    from_: str,
+    to_: str,
+    edge_label_name: str,
+    node_location,
+    node_trace: go.Scatter,
+    height: int,
+    width: int,
+) -> go.Figure:
+    _df = df[[from_, to_, edge_label_name]]
+    _edge_df = (
+        _df.groupby([from_, to_])[edge_label_name]
+        .apply(lambda x: ", ".join(x))
+        .reset_index()
     )
     fig = go.Figure(
         node_trace,
@@ -51,13 +65,16 @@ def vis_digraph(
             hovermode="closest",
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-            showlegend=True
+            showlegend=True,
         ),
     )
-    fig.update_layout(height = height, width = width)
-    for edges in _nx_network_info.edges(data=True):
-        _location_from_x, _location_from_y = _node_location[edges[0]]
-        _location_to_x, _location_to_y = _node_location[edges[1]]
+    fig.update_layout(height=height, width=width)
+    for _, edges in _edge_df.iterrows():
+        _from = edges[from_]
+        _to = edges[to_]
+        _edge_label = edges[edge_label_name]
+        _location_from_x, _location_from_y = node_location[_from]
+        _location_to_x, _location_to_y = node_location[_to]
         fig.add_annotation(
             dict(
                 x=_location_to_x,
@@ -79,11 +96,8 @@ def vis_digraph(
             dict(
                 x=(_location_from_x + _location_to_x) / 2,
                 y=(_location_from_y + _location_to_y) / 2,
-                text=edges[2][edge_label_name],
-                font=dict(
-                    color="grey",
-                    size=12
-                ),
+                text=_edge_label,
+                font=dict(color="grey", size=12),
                 showarrow=True,
                 arrowhead=0,
                 arrowcolor="grey",
