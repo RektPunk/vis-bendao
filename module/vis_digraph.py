@@ -8,16 +8,16 @@ def get_nodes(
     balance_df: pd.DataFrame,
     from_: str,
     to_: str,
-    _nx_network_info=None,
+    node_location=None,
 ):
     _df = df[[from_, to_]]
-    if _nx_network_info is None:
-        _nx_network_info = nx.from_pandas_edgelist(
-            _df,
-            source=from_,
-            target=to_,
-        )
-    _node_location = nx.layout.spring_layout(_nx_network_info)
+    _nx_network_info = nx.from_pandas_edgelist(
+        _df,
+        source=from_,
+        target=to_,
+    )
+    if node_location is None:
+        node_location = nx.layout.spring_layout(_nx_network_info)
     node_x = []
     node_y = []
     node_names = []
@@ -26,7 +26,7 @@ def get_nodes(
         _balance_change = balance_df.loc[balance_df["address_"] == node][
             ["name", "balance_change"]
         ].to_dict(orient="records")
-        _location_x, _location_y = _node_location[node]
+        _location_x, _location_y = node_location[node]
         node_names.append(node)
         node_labels.append(
             "P/L: "
@@ -56,7 +56,7 @@ def get_nodes(
             color="red",
         ),
     )
-    return (_node_location, node_trace, _nx_network_info)
+    return (node_location, node_trace)
 
 
 def vis_digraph(

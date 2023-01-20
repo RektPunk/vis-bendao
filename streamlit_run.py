@@ -97,7 +97,7 @@ if len(st.session_state.transactions) != 0:
         )
         _selected_df = pd.DataFrame(transactions_aggrid_response["selected_rows"])
 
-        node_location, node_trace, _nx_infos = get_nodes(
+        node_location, node_trace = get_nodes(
             df=_df,
             balance_df=_balance_df,
             from_="from_address_",
@@ -122,12 +122,12 @@ if len(st.session_state.transactions) != 0:
             if len(_selected_df) != 0:
                 st.write("### Selected rows graph")
                 _selected_balance_df = get_loss_gain(_selected_df)
-                _selected_node_location, _selected_node_trace, _ = get_nodes(
+                _selected_node_location, _selected_node_trace = get_nodes(
                     df=_df,
                     balance_df=_selected_balance_df,
                     from_="from_address_",
                     to_="to_address_",
-                    _nx_network_info=_nx_infos,
+                    node_location=node_location,
                 )
                 _selected_edge_labels_df = get_edge_label(_selected_df)
                 selected_transaction_fig = vis_digraph(
