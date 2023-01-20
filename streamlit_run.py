@@ -68,19 +68,19 @@ if len(st.session_state.transactions) != 0:
             from_address_=[address[-5:] for address in _df["from_address"]],
             to_address_=[address[-5:] for address in _df["to_address"]],
         )
-        
-        _aggrid_df = _df[[
-                "from_address_", 
+
+        _aggrid_df = _df[
+            [
+                "from_address_",
                 "to_address_",
                 "token_address",
                 "name",
                 "_amount",
                 "edge_attr",
-        ]]
+            ]
+        ]
         grid_options_builder = GridOptionsBuilder.from_dataframe(_aggrid_df)
-        grid_options_builder.configure_pagination(
-            paginationAutoPageSize=True
-        )
+        grid_options_builder.configure_pagination(paginationAutoPageSize=True)
         grid_options_builder.configure_side_bar()
         grid_options_builder.configure_selection(
             "multiple",
@@ -97,11 +97,11 @@ if len(st.session_state.transactions) != 0:
             reload_data=False,
         )
         _selected_df = pd.DataFrame(aggrid_response["selected_rows"])
-        
+
         node_location, node_trace = get_nodes(
-            df = _df,
-            from_ = "from_address_",
-            to_ = "to_address_",
+            df=_df,
+            from_="from_address_",
+            to_="to_address_",
         )
         whole_transaction_fig = vis_digraph(
             _df,
@@ -126,5 +126,3 @@ if len(st.session_state.transactions) != 0:
                 width,
             )
             st.plotly_chart(selected_transaction_fig, height=height, width=width)
-        
-        
