@@ -15,13 +15,8 @@ st.set_page_config(
 )
 
 st.write("# BendDao trace tracker")
-st.sidebar.write("# Input transaction hash")
-maxtags_sidebar = st.sidebar.slider(
-    label="Number of transactions allowed?",
-    min_value=1,
-    max_value=5,
-    value=3,
-)
+
+st.write("### Vis settings:")
 height = st.sidebar.slider(
     label="Height",
     min_value=100,
@@ -34,8 +29,15 @@ width = st.sidebar.slider(
     max_value=1000,
     value=800,
 )
+
+st.write("### Input transaction hash:")
+maxtags_sidebar = st.sidebar.slider(
+    label="Number of transactions allowed?",
+    min_value=1,
+    max_value=5,
+    value=3,
+)
 st.session_state.transactions = st_tags_sidebar(
-    label="# Input transaction hash:",
     text="Press enter to add more",
     value=[],
     maxtags=maxtags_sidebar,
@@ -71,6 +73,7 @@ if len(st.session_state.transactions) != 0:
                 "_amount_num",
             ]
         ]
+        st.write("### Raw data:")
         transactions_vis_builder = GridOptionsBuilder.from_dataframe(_aggrid_df)
         transactions_vis_builder.configure_pagination(paginationAutoPageSize=True)
         transactions_vis_builder.configure_side_bar()
@@ -101,7 +104,7 @@ if len(st.session_state.transactions) != 0:
         st.write("### Balance change:")
         st.dataframe(_balance_df)
 
-        st.write("### Transactions graph")
+        st.write("### Transactions graph:")
         transactions_fig = vis_digraph(
             df=_df,
             edge_label_df=_edge_labels_df,
@@ -116,11 +119,11 @@ if len(st.session_state.transactions) != 0:
 
     with selected_tab:
         if _selected_df is not None:
-            st.write("### Selected rows balance change")
+            st.write("### Selected rows balance change:")
             _selected_balance_df = get_loss_gain(_selected_df)
             st.dataframe(_selected_balance_df)
 
-            st.write("### Selected rows transactions graph")
+            st.write("### Selected rows transactions graph:")
             _selected_node_location, _selected_node_trace = get_nodes(
                 df=_df,
                 balance_df=_selected_balance_df,
