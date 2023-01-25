@@ -2,15 +2,20 @@ from typing import List
 import pandas as pd
 
 
-def assign_columns(
+def valid_data(
     df: pd.DataFrame,
     txs: List[str],
-    address_len: int = 5,
 ):
     _df = df.loc[df["transaction_hash"].isin(txs)]
     if len(_df) == 0:
         return None
-    _df = _df.assign(
+    else:
+        return _df
+
+def assign_numeric_columns(
+    df: pd.DataFrame,
+) -> pd.DataFrame:
+    _df = df.assign(
         _amount=[
             str(round(int(amount) / 10**18, 3))
             if (
@@ -25,19 +30,33 @@ def assign_columns(
                 or name is None
             )
             else amount
-            for amount, name in zip(_df["amount"], _df["name"])
+            for amount, name in zip(df["amount"], df["name"])
         ]
     )
     _df = _df.assign(
         _amount_num=_df._amount.astype(float),
     )
-    _df = _df.assign(
+    return _df
+
+
+def assign_address_columns(
+    df: pd.DataFrame,
+    address_len: int = 5,
+) -> pd.DataFrame:
+    _df = df.assign(
+        from_address_=[address[-address_len:] for address in df["from_address"]],
+        to_address_=[address[-address_len:] for address in df["to_address"]],
+    )
+    return _df
+
+def assign_edge_attr_columns(
+    df: pd.DataFrame,
+) -> pd.DataFrame:
+    _df = df.assign(
         addresses=[
             ",".join(sorted([from_address, to_address]))
-            for from_address, to_address in zip(_df["from_address"], _df["to_address"])
+            for from_address, to_address in zip(df["from_address_"], df["to_address_"])
         ],
-        from_address_=[address[-address_len:] for address in _df["from_address"]],
-        to_address_=[address[-address_len:] for address in _df["to_address"]],
     )
     _df = _df.assign(
         edge_attr=[
@@ -58,21 +77,21 @@ def get_loss_gain(
     address_len: int = 5,
 ):
     _loss_df = (
-        df.groupby(["from_address", "name"])
+        df.groupby(["from_address_", "name"])
         ._amount_num.sum()
         .reset_index()
         .rename(
             columns={
-                "from_address": "address",
+                "from_address_": "address",
                 "_amount_num": "loss",
             }
         )
     )
     _gain_df = (
-        df.groupby(["to_address", "name"])
+        df.groupby(["to_address_", "name"])
         ._amount_num.sum()
         .reset_index()
-        .rename(columns={"to_address": "address", "_amount_num": "gain"})
+        .rename(columns={"to_address_": "address", "_amount_num": "gain"})
     )
     _balance_df = _loss_df.merge(_gain_df, how="outer", on=["address", "name"]).fillna(
         0
