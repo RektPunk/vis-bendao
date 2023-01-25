@@ -1,7 +1,14 @@
 import pandas as pd
 import streamlit as st
 from streamlit_tags import st_tags_sidebar
-from module.refine import assign_columns, get_loss_gain, get_edge_label
+from module.refine import (
+    valid_data,
+    assign_numeric_columns,
+    assign_address_columns,
+    assign_edge_attr_columns, 
+    get_loss_gain, 
+    get_edge_label,
+)
 from module.vis_digraph import get_nodes, vis_digraph
 from st_aggrid import AgGrid, GridOptionsBuilder
 import json
@@ -49,9 +56,23 @@ st.session_state.transactions = st_tags_sidebar(
 st.sidebar.write("### Inputs:")
 st.sidebar.write((st.session_state.transactions))
 
+st.sidebar.write("### Wallet encoding rule:")
+wallet_encoding_rule_input = st.sidebar.text_area(
+    label = "",
+    value = """{
+    "00000": "NULL"
+}""",
+)
+try:
+    wallet_encoding_rule = eval(wallet_encoding_rule_input)
+    st.sidebar.json(wallet_encoding_rule)
+except:
+    wallet_encoding_rule = {}
+    st.sidebar.write("Encoding failed")
+
 
 if len(st.session_state.transactions) != 0:
-    _df = assign_columns(
+    _df = valid_data(
         df=df,
         txs=st.session_state.transactions,
     )
@@ -59,6 +80,16 @@ if len(st.session_state.transactions) != 0:
     if _df is None:
         st.write("Not availiable")
     else:
+        _df = assign_numeric_columns(
+            df=_df,
+        )
+        _df = assign_address_columns(
+            df=_df,
+        )
+        _df = _df.replace(wallet_encoding_rule)
+        _df = assign_edge_attr_columns(
+            df=_df,
+        )
         _edge_labels_df = get_edge_label(_df)
         _balance_df = get_loss_gain(
             df=_df,
