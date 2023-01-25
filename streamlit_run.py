@@ -39,7 +39,11 @@ maxtags_sidebar = st.sidebar.slider(
 )
 st.session_state.transactions = st_tags_sidebar(
     text="Press enter to add more",
-    value=[],
+    label="",
+    value=[
+        "0x9a44a532e4798e49a4a5c87bba0f4aba95a36fdac0235513e48c8a9785d6ea44", 
+        "0xfff014e873e471a3de285ea90d0392036d11a28439fbfc2adab571e2af55b6e0",
+    ],
     maxtags=maxtags_sidebar,
 )
 st.sidebar.write("### Inputs:")
