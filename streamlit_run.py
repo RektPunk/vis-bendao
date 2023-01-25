@@ -16,7 +16,7 @@ st.set_page_config(
 
 st.write("# BendDao trace tracker")
 
-st.write("### Vis settings:")
+st.sidebar.write("### Vis settings:")
 height = st.sidebar.slider(
     label="Height",
     min_value=100,
@@ -30,7 +30,7 @@ width = st.sidebar.slider(
     value=800,
 )
 
-st.write("### Input transaction hash:")
+st.sidebar.write("### Input transaction hash:")
 maxtags_sidebar = st.sidebar.slider(
     label="Number of transactions allowed?",
     min_value=1,
