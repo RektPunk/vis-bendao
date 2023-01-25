@@ -5,8 +5,8 @@ from module.refine import (
     valid_data,
     assign_numeric_columns,
     assign_address_columns,
-    assign_edge_attr_columns, 
-    get_loss_gain, 
+    assign_edge_attr_columns,
+    get_loss_gain,
     get_edge_label,
 )
 from module.vis_digraph import get_nodes, vis_digraph
@@ -48,7 +48,7 @@ st.session_state.transactions = st_tags_sidebar(
     text="Press enter to add more",
     label="",
     value=[
-        "0x9a44a532e4798e49a4a5c87bba0f4aba95a36fdac0235513e48c8a9785d6ea44", 
+        "0x9a44a532e4798e49a4a5c87bba0f4aba95a36fdac0235513e48c8a9785d6ea44",
         "0xfff014e873e471a3de285ea90d0392036d11a28439fbfc2adab571e2af55b6e0",
     ],
     maxtags=maxtags_sidebar,
@@ -58,8 +58,8 @@ st.sidebar.write((st.session_state.transactions))
 
 st.sidebar.write("### Wallet encoding rule:")
 wallet_encoding_rule_input = st.sidebar.text_area(
-    label = "",
-    value = """{
+    label="",
+    value="""{
     "00000": "NULL"
 }""",
 )

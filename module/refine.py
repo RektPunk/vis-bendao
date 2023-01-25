@@ -12,6 +12,7 @@ def valid_data(
     else:
         return _df
 
+
 def assign_numeric_columns(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
@@ -48,6 +49,7 @@ def assign_address_columns(
         to_address_=[address[-address_len:] for address in df["to_address"]],
     )
     return _df
+
 
 def assign_edge_attr_columns(
     df: pd.DataFrame,
