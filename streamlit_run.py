@@ -46,7 +46,7 @@ st.sidebar.write("### Wallet encoding rule:")
 wallet_encoding_rule_input = st.sidebar.text_area(
     label="",
     value="""{
-    "00000": "NULL"
+    "00000": "NULL address"
 }""",
 )
 try:
@@ -62,7 +62,7 @@ st.session_state.target_wallet = st_tags_sidebar(
     text="Press enter to add more",
     label="",
     value=[
-        "1dd07",
+        "NULL address",
     ],
     maxtags=maxtags_sidebar,
 )
