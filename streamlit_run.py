@@ -23,20 +23,6 @@ st.set_page_config(
 
 st.write("# BendDao trace tracker")
 
-st.sidebar.write("### Vis settings:")
-height = st.sidebar.slider(
-    label="Height",
-    min_value=100,
-    max_value=1000,
-    value=800,
-)
-width = st.sidebar.slider(
-    label="Width",
-    min_value=100,
-    max_value=1000,
-    value=800,
-)
-
 st.sidebar.write("### Input transaction hash:")
 maxtags_sidebar = st.sidebar.slider(
     label="Number of transactions allowed?",
@@ -69,6 +55,34 @@ try:
 except:
     wallet_encoding_rule = {}
     st.sidebar.write("Encoding failed")
+
+
+st.sidebar.write("### Target wallet:")
+st.session_state.target_wallet = st_tags_sidebar(
+    text="Press enter to add more",
+    label="",
+    value=[
+        "1dd07",
+    ],
+    maxtags=maxtags_sidebar,
+)
+st.sidebar.write("### Inputs:")
+st.sidebar.write((st.session_state.target_wallet))
+
+
+st.sidebar.write("### Viewable image size:")
+height = st.sidebar.slider(
+    label="Height",
+    min_value=100,
+    max_value=1000,
+    value=800,
+)
+width = st.sidebar.slider(
+    label="Width",
+    min_value=100,
+    max_value=1000,
+    value=800,
+)
 
 
 if len(st.session_state.transactions) != 0:
@@ -128,6 +142,7 @@ if len(st.session_state.transactions) != 0:
         node_location, node_trace = get_nodes(
             df=_df,
             balance_df=_balance_df,
+            target_wallet=st.session_state.target_wallet,
             from_="from_address_",
             to_="to_address_",
         )
@@ -162,6 +177,7 @@ if len(st.session_state.transactions) != 0:
             _selected_node_location, _selected_node_trace = get_nodes(
                 df=_df,
                 balance_df=_selected_balance_df,
+                target_wallet=st.session_state.target_wallet,
                 from_="from_address_",
                 to_="to_address_",
                 node_location=node_location,

@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 import networkx as nx
 import plotly.graph_objects as go
@@ -6,6 +7,7 @@ import plotly.graph_objects as go
 def get_nodes(
     df: pd.DataFrame,
     balance_df: pd.DataFrame,
+    target_wallet: List[str],
     from_: str,
     to_: str,
     node_location=None,
@@ -22,6 +24,7 @@ def get_nodes(
     node_y = []
     node_names = []
     node_labels = []
+    node_colors = []
     for node in _nx_network_info.nodes():
         _balance_change = balance_df.loc[balance_df["address_"] == node][
             ["name", "balance_change"]
@@ -37,6 +40,10 @@ def get_nodes(
                 ]
             )
         )
+        if node in target_wallet:
+            node_colors.append("blue")
+        else:
+            node_colors.append("red")
         node_x.append(_location_x)
         node_y.append(_location_y)
 
@@ -50,10 +57,10 @@ def get_nodes(
         textposition="top center",
         marker=dict(
             size=10,
-            color="red",
+            color=node_colors,
         ),
         textfont=dict(
-            color="red",
+            color=node_colors,
         ),
     )
     return (node_location, node_trace)
