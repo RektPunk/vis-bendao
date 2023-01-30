@@ -11,7 +11,7 @@ from module.refine import (
 )
 from module.vis_digraph import get_nodes, vis_digraph
 from st_aggrid import AgGrid, GridOptionsBuilder
-import json
+
 
 DATA_FILENAME = "data/benddao.parquet"
 df = pd.read_parquet(DATA_FILENAME)
