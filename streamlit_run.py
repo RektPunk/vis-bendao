@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 from streamlit_tags import st_tags_sidebar
+from st_aggrid import AgGrid, GridOptionsBuilder
 from module.refine import (
     valid_data,
     assign_numeric_columns,
@@ -10,11 +11,11 @@ from module.refine import (
     get_edge_label,
 )
 from module.vis_digraph import get_nodes, vis_digraph
-from st_aggrid import AgGrid, GridOptionsBuilder
+from module.variables import COLUMN_NAMES
 
 
 DATA_FILENAME = "data/benddao.parquet"
-df = pd.read_parquet(DATA_FILENAME)
+
 
 st.set_page_config(
     page_title="BendDao txs",
@@ -22,6 +23,18 @@ st.set_page_config(
 )
 
 st.write("# BendDao trace tracker")
+
+uploaded_file = st.sidebar.file_uploader("Choose a file")
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    if len(COLUMN_NAMES.difference(set(df.columns))) != 0:
+        st.sidebar.write(
+            f"The file uploaded is not a valid file: {COLUMN_NAMES} must be in the file"
+        )
+    else:
+        st.sidebar.write("File uploaded successfully")
+else:
+    df = pd.read_parquet(DATA_FILENAME)
 
 st.sidebar.write("### Input transaction hash:")
 maxtags_sidebar = st.sidebar.slider(
